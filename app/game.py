@@ -10,7 +10,7 @@ valid_options = ["rock", "paper", "scissors"]
 def determine_winner(choice1, choice2):
     """
     Params:
-        choice1 and choice2 are both string : one of "rock", "paper", or "scissors"
+        choice1 and choice2 are both strings : one of "rock", "paper", or "scissors"
     """
     winners = {
         "rock":{
