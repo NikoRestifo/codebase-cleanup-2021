@@ -1,8 +1,3 @@
-
-# TODO: import some code
-
-# TODO: test the code
-
 from app.game import determine_winner
 
 def test_determination_of_the_winner():
