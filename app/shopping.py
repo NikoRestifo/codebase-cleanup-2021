@@ -1,5 +1,5 @@
 import os
-from datetime import datetime
+import datetime
 from pandas import read_csv
 
 def format_usd(my_price):
@@ -48,29 +48,32 @@ if __name__ == "__main__":
             else:
                 print("OOPS, Couldn't find that product. Please try again.")
 
-    checkout_at = datetime.now()
+    date = datetime.date.today()
+    time = datetime.datetime.now()
 
     subtotal = sum([float(p["price"]) for p in selected_products])
 
     # PRINT RECEIPT
-    checkout_time_format = checkout_at.strftime("%Y-%M-%d %H:%m:%S")
+    checkout_time_format = str(date) + " " + str(time.strftime("%I:%M:%S %p"))
     tax_rate = 0.0875
     total_tax = tax_rate * subtotal
     total_bill = subtotal + total_tax
-
-    print("---------")
-    print("CHECKOUT AT: " + str(checkout_time_format))
-    print("---------")
+    
+    receipt = ""
     for p in selected_products:
-        print("SELECTED PRODUCT: " + p["name"] + "   " + format_usd(p["price"]))
+        receipt += "SELECTED PRODUCT: " + p["name"] + "   " + format_usd(p["price"]) + "\n"
+    receipt += "---------\n"
+    receipt += f"SUBTOTAL: {format_usd(subtotal)}\n"
+    receipt += f"TAX: {format_usd(total_tax)}\n"
+    receipt += f"TOTAL: {format_usd((total_bill))}\n"
+    receipt += "---------\n"
+    receipt += "THANK YOU! PLEASE COME AGAIN SOON!\n"
+    receipt += "---------\n"
 
     print("---------")
-    print(f"SUBTOTAL: {format_usd(subtotal)}")
-    print(f"TAX: {format_usd(total_tax)}")
-    print(f"TOTAL: {format_usd((total_bill))}")
+    print("CHECKOUT AT: " + checkout_time_format)
     print("---------")
-    print("THANK YOU! PLEASE COME AGAIN SOON!")
-    print("---------")
+    print(receipt)
 
     # WRITE RECEIPT TO FILE
 
@@ -78,14 +81,5 @@ if __name__ == "__main__":
     receipt_filepath = os.path.join(os.path.dirname(__file__), "..", "receipts", f"{receipt_id}.txt")
 
     with open(receipt_filepath, "w") as receipt_file:
-        receipt_file.write("------------------------------------------")
-        for p in selected_products:
-            receipt_file.write("\nSELECTED PRODUCT: " + p["name"] + "   " + format_usd(p["price"]))
-
-        receipt_file.write("\n---------")
-        receipt_file.write(f"\nSUBTOTAL: {format_usd(subtotal)}")
-        receipt_file.write(f"\nTAX: {format_usd(total_tax)}")
-        receipt_file.write(f"\nTOTAL: {format_usd(total_bill)}")
-        receipt_file.write("\n---------")
-        receipt_file.write("\nTHANK YOU! PLEASE COME AGAIN SOON!")
-        receipt_file.write("\n---------")
+        receipt_file.write("------------------------------------------\n")
+        receipt_file.write(receipt)
